@@ -12,95 +12,93 @@
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
-
-/*
-INPUT:
-  a number (n)
-OUTPUT:
-  an array of arrays representing a board with a completed solution
-CONSTRAINTS:
-  if n is not a number return null
-EDGE CASES:
-  if n is <= 0 return null
-*/
-
 window.findNRooksSolution = function(n) {
-  if (typeof n !== 'number' || n <= 0) {
-    return null;
-  }
-  var solution;
-
-  const placePieces = function(currY, currX) {
-    // if we've reached the last (bottom right) space on the board
-    if (currX === n - 1 && currY === n - 1) {
-      // if we haven't placed all the pieces yet
-      if (numOfPieces < n) {
-        // if placing a piece on the last space wouldn't cause a conflict
-        if (!instance.hasRowConflictAt(currY) && !instance.hasColConflictAt(currX)) {
-          // place a piece
-          instance.togglePiece(currY, currX);
-          // increment number of pieces
-          numOfPieces++;
-          // if number of pieces equals n
-          if (numOfPieces === n) {
-            // return solution
-            solution = board;
-            return solution;
-          // if number of pieces does not equal n
+  var solution = undefined;
+  for (var xStart = 0; xStart < n; xStart++) {
+    var instance = new Board({n: n});
+    console.log(instance);
+    var board = instance.attributes;
+    instance.togglePiece(0, xStart);//(y, x)
+    var piecesPlaced = 1;
+    //var x = 0;
+    var otherPieces = function(y) {
+      if (y > (n - 1)) {
+        return;
+      } else {
+        for (var x = 0; x < (n - 1); x++) {
+          instance.togglePiece(y, x);
+          if (board.hasAnyRowConflicts || board.hasAnyColConflicts) {
+            instance.togglePiece(y, x);
+            continue;
           } else {
-            // break out of recursion
-            return;
+            piecesPlaced++;
+            console.log('placed one');
+            if (piecesPlaced === n) {
+              solution = board;
+              console.log('solution found');
+              return;
+            } else {
+              otherPieces(y + 1);
+            }
           }
         }
       }
-    // if we're not at the last space yet
-    } else {
-      // if current space causes vertical or horizontal conflict
-      if (instance.hasColConflictAt(currX) || instance.hasRowConflictAt(currY)) {
-        // recursively invoke function again
-        // if we've reached the end of a row
-        if (currX === n - 1) {
-          // placePieces(curry + 1, 0)
-          return placePieces(currY + 1, 0);
-        // if we're not at the end of a row
-        } else {
-          // placePieces(currY, currX + 1)
-          return placePieces(currY, currX + 1);
-        }
-      // else if there is no conflict
-      } else {
-        // place a piece there
-        instance.togglePiece(currY, currX);
-        numOfPieces++;
-        // recursively invoke function again
-        // if we've reached the end of a row
-        if (currX === n - 1) {
-          // placePieces(curry + 1, 0)
-          return placePieces(currY + 1, 0);
-        // if we're not at the end of a row
-        } else {
-          // placePieces(currY, currX + 1)
-          return placePieces(currY, currX + 1);
-        }
-      }
-    }
-  };
-
-  for (var x = 0; x < n; x++) {
-    var instance = new Board({'n': n});
-    var board = instance.attributes;
-    instance.togglePiece(0, x);
-    var numOfPieces = 1;
-    placePieces(1, 0);
+    };
+    //if (solution !== undefined) {
+    console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
+    return solution;
+    //}
   }
-
-  // console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
 };
+//base case - if reach end of board and piecesPlaced < n, return to break out of recursive function
+//increment Yval, start at xVal = 0;
+//keep an element of the board constant- yVal(row)
+
+
+
+
+
+
+// for (var yVal = 1; yVal < n; yVal++) {
+//   for (var xVal = 0; xVal < n; xVal++) {
+//     togglePiece(xVal, yVal);
+//     if (this.hasAnyRowConflicts || this.hasAnyColConflicts) {
+//       continue;
+//     } else {
+//       otherpieces();
+//     }
+//   }
+// }
+
+//  recursive function to place next piece and check if there is conflicts..
+//   if row or column conflict, continue
+//   else, move to next row and call recursion until last row is done.
+//   if finish last row, add this board to solution array.
+
+
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0;
+
+  var board = new Board({n: n});
+
+  var findSolution = function(row) {
+    if (row === n) {
+      solutionCount++;
+      return;
+    }
+
+    for (var i = 0; i < n; i++) {
+      board.togglePiece(row, i);
+      if (!board.hasAnyRowConflicts() && !board.hasAnyColConflicts()) {
+        findSolution(row + 1);
+      }
+      board.togglePiece(row, i);
+    }
+  };
+
+  findSolution(0);
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
