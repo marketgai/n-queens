@@ -79,12 +79,27 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      let count = 0;
+      let row = this.attributes[rowIndex];
+      for (var i = 0; i < row.length; i++) {
+        let spaceVal = row[i];
+        count += spaceVal;
+      }
+      if (count > 1) {
+        return true;
+      }
+      return false;
     },
+
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      for (var key in this.attributes) {
+        if (this.hasRowConflictAt(key)) {
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -94,12 +109,30 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      let count = 0;
+      var board = this.attributes;
+      for (var row in board) {
+        if (!isNaN(row)) {
+          count += board[row][colIndex];
+        }
+      }
+      if (count > 1) {
+        return true;
+      }
+      return false;
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+      var board = this.attributes;
+      for (let i = 0; i < board.n; i++) {
+        for (var row in board) {
+          if (this.hasColConflictAt(i)) {
+            return true;
+          }
+        }
+      }
+      return false;
     },
 
 
@@ -109,12 +142,40 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var count = 0;
+      const board = this.attributes;
+
+      if (majorDiagonalColumnIndexAtFirstRow >= 0) {
+        var verticalIndex = 0;
+        for (var i = majorDiagonalColumnIndexAtFirstRow; i < board.n; i++) {
+          count += board[verticalIndex][i];
+          verticalIndex++;
+        }
+      } else {
+        var verticalIndex = -majorDiagonalColumnIndexAtFirstRow;
+        for (var i = 0; i < board.n-verticalIndex; i++) {
+          count += board[verticalIndex][i];
+          verticalIndex++;
+        }
+      }
+
+      if (count > 1) {
+        return true;
+      }
+      return false;
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      // const board = this.attributes;
+      // var startingPoint = (board.n - 1) * -1;
+      // for (var i = startingPoint; i < board.n; i++) {
+      //   if (this.hasMajorDiagonalConflictAt(i)) {
+      //     return true;
+      //   }
+      // }
+
+      return false;
     },
 
 
@@ -146,3 +207,8 @@
   };
 
 }());
+
+var board = new Board({n:3});
+board.togglePiece(1,0);
+board.togglePiece(2,1);
+console.log(board.attributes);
