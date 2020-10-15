@@ -202,7 +202,6 @@
           yAxis++;
         }
       }
-      console.log(count);
       if (count > 1) {
         return true;
       }
@@ -237,7 +236,7 @@
 
 }());
 
-var board = new Board({ n: 3 });
-board.togglePiece(1, 0);
-board.togglePiece(0, 1);
-console.log(board.attributes);
+// var board = new Board({ n: 3 });
+// board.togglePiece(1, 0);
+// board.togglePiece(0, 1);
+// console.log(board.attributes);
