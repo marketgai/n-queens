@@ -235,8 +235,3 @@
   };
 
 }());
-
-// var board = new Board({ n: 3 });
-// board.togglePiece(1, 0);
-// board.togglePiece(0, 1);
-// console.log(board.attributes);
